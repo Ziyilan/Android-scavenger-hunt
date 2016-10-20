@@ -4,10 +4,19 @@
     android:layout_height="match_parent"
     tools:context="jason.scavenger_hunt.RunFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I'm Out"
+        android:id="@+id/runCancel"
+        android:layout_gravity="left|bottom" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Run = Done"
+        android:id="@+id/runDone"
+        android:layout_gravity="right|bottom" />
 
 </FrameLayout>
