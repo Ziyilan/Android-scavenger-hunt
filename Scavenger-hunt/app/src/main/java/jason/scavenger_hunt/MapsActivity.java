@@ -1,12 +1,17 @@
 package jason.scavenger_hunt;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -18,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -57,16 +63,69 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng olin = new LatLng(42.2932, 71.2637);
+        LatLng olin = new LatLng(42.2932, -71.2637);
         mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(olin));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(olin).zoom(19f).tilt(70).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        // required method
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//
+//        // check if map is created successfully or not
+//        if (mMap != null) {
+//            mMap.getUiSettings().setZoomControlsEnabled(false);
+//            LatLng latLong;
+//
+//
+//            latLong = new LatLng(location.getLatitude(), location.getLongitude());
+//
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(latLong).zoom(19f).tilt(70).build();
+//
+//            mMap.setMyLocationEnabled(true);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            mMap.animateCamera(CameraUpdateFactory
+//                    .newCameraPosition(cameraPosition));
+//
+////            mLocationMarkerText.setText("Lat : " + location.getLatitude() + "," + "Long : " + location.getLongitude());
+//            startIntentService(location);
+//
+//
+//        } else {
+//            Toast.makeText(getApplicationContext(),
+//                    "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+//                    .show();
+//        }
 
     }
+
+//     protected void startIntentService(Location mLocation) {
+//         // Create an intent for passing to the intent service responsible for fetching the address.
+//         Intent intent = new Intent(this, FetchAddressIntentService.class);
+//
+//         // Pass the result receiver as an extra to the service.
+//         intent.putExtra(AppUtils.LocationConstants.RECEIVER, mResultReceiver);
+//
+//         // Pass the location data as an extra to the service.
+//         intent.putExtra(AppUtils.LocationConstants.LOCATION_DATA_EXTRA, mLocation);
+//
+//         // Start the service. If the service isn't already running, it is instantiated and started
+//         // (creating a process for it if needed); if it is running then it remains running. The
+//         // service kills itself automatically once all intents are processed.
+//         startService(intent);
+//     }
 
     @Override
     public void onConnected(Bundle arg0) {
