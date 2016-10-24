@@ -1,5 +1,7 @@
 package jason.scavenger_hunt;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,7 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements jason.scavenger_hunt.CourseMenuFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +27,8 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //        transaction.add(R.id.fragment_container, fragment, "MainActivityFragment");
         transaction.add(R.id.fragment_container, new MainMenuFragment());
+//        transaction.add(R.id.fragment_container, fragment, "MainActivityFragment");
         transaction.commit();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -64,6 +58,25 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void changeActivity() {
+
+        Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(i);
+    }
+
+    public void goToManageCourseMenu(Uri uri){
+        CourseMenuFragment courseMenuFragment = new CourseMenuFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_container, courseMenuFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
         transaction.commit();
     }
 
