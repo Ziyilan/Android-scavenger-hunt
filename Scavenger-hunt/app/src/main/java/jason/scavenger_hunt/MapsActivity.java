@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,7 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
         LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
+        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnCameraChangeListener
  {
 
     private LocationRequest mLocationRequest;
@@ -58,7 +59,8 @@ public class MapsActivity extends FragmentActivity
 
     }
 
-    @Override
+
+     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -66,9 +68,29 @@ public class MapsActivity extends FragmentActivity
         LatLng olin = new LatLng(42.2932, -71.2637);
         mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(olin).zoom(19f).tilt(70).build();
+                .target(olin).zoom(19f).tilt(0).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+             @Override
+             public void onCameraChange(CameraPosition cameraPosition) {
+
+                 Log.i("centerLat",Double.toString(cameraPosition.target.latitude));
+
+                 Log.i("centerLong",Double.toString(cameraPosition.target.longitude));
+             }
+         });
     }
+
+     @Override
+     public void onCameraChange(CameraPosition position) {
+         ImageView pinButton = (ImageView) findViewById(R.id.pin);
+         mMap.clear();
+         mMap.addMarker( new MarkerOptions()
+                 .position( position.target )
+                 .title( position.toString() )
+         );
+     }
 
     @Override
     public void onLocationChanged(Location location) {

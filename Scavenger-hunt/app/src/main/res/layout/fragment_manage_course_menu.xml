@@ -1,19 +1,9 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jason.scavenger_hunt.CourseMenuFragment">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp">
+    android:layout_gravity="center"
+    android:layout_marginTop="100dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
         <Button
             android:layout_width="wrap_content"
@@ -29,5 +19,3 @@
             android:id="@+id/createCourseButton"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
-
-</FrameLayout>
