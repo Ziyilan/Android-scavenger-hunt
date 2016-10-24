@@ -7,5 +7,6 @@
     <string name="manager_manage_courses_button">Manage Courses</string>
     <string name="manager_delete_courses_button">Delete</string>
     <string name="title_activity_maps">Map</string>
+    <string name="manager_add_point">Add Point</string>
 
 </resources>

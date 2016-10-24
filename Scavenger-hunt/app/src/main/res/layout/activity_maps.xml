@@ -14,4 +14,12 @@
         android:layout_gravity="center"
         android:contentDescription="@null"
         android:src="@mipmap/pin" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manager_add_point"
+        android:id="@+id/manageAddPointButton"
+        android:layout_gravity="left|bottom" />
+
 </fragment>

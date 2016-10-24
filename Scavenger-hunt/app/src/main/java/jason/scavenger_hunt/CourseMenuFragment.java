@@ -33,7 +33,7 @@ public class CourseMenuFragment extends Fragment {
         manageCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).changeActivity();
+                ((MainActivity) getActivity()).changeFragment(new ManageCourseFragment());
             }
         });
 

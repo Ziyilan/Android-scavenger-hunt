@@ -11,6 +11,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,13 +33,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
         LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnCameraChangeListener
+        GoogleApiClient.OnConnectionFailedListener
  {
 
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private String TAG = "MapsActivity";
+     private Button addPointButton;
+     private CameraPosition mCameraPosition;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,16 @@ public class MapsActivity extends FragmentActivity
 
             mGoogleApiClient.connect();
 
+        addPointButton = (Button) findViewById(R.id.manageAddPointButton);
+        addPointButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast = Toast.makeText(getApplicationContext(), Double.toString(mCameraPosition.target.latitude) + ", " + Double.toString(mCameraPosition.target.longitude), Toast.LENGTH_SHORT );
+                toast.show();
+
+            }
+        });
+
     }
 
 
@@ -64,7 +79,7 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker at Olin and move the camera
         LatLng olin = new LatLng(42.2932, -71.2637);
         mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -74,6 +89,7 @@ public class MapsActivity extends FragmentActivity
          googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
              @Override
              public void onCameraChange(CameraPosition cameraPosition) {
+                 mCameraPosition = cameraPosition;
 
                  Log.i("centerLat",Double.toString(cameraPosition.target.latitude));
 
@@ -82,72 +98,10 @@ public class MapsActivity extends FragmentActivity
          });
     }
 
-     @Override
-     public void onCameraChange(CameraPosition position) {
-         ImageView pinButton = (ImageView) findViewById(R.id.pin);
-         mMap.clear();
-         mMap.addMarker( new MarkerOptions()
-                 .position( position.target )
-                 .title( position.toString() )
-         );
-     }
-
     @Override
     public void onLocationChanged(Location location) {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//
-//        // check if map is created successfully or not
-//        if (mMap != null) {
-//            mMap.getUiSettings().setZoomControlsEnabled(false);
-//            LatLng latLong;
-//
-//
-//            latLong = new LatLng(location.getLatitude(), location.getLongitude());
-//
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(latLong).zoom(19f).tilt(70).build();
-//
-//            mMap.setMyLocationEnabled(true);
-//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//            mMap.animateCamera(CameraUpdateFactory
-//                    .newCameraPosition(cameraPosition));
-//
-////            mLocationMarkerText.setText("Lat : " + location.getLatitude() + "," + "Long : " + location.getLongitude());
-//            startIntentService(location);
-//
-//
-//        } else {
-//            Toast.makeText(getApplicationContext(),
-//                    "Sorry! unable to create maps", Toast.LENGTH_SHORT)
-//                    .show();
-//        }
 
     }
-
-//     protected void startIntentService(Location mLocation) {
-//         // Create an intent for passing to the intent service responsible for fetching the address.
-//         Intent intent = new Intent(this, FetchAddressIntentService.class);
-//
-//         // Pass the result receiver as an extra to the service.
-//         intent.putExtra(AppUtils.LocationConstants.RECEIVER, mResultReceiver);
-//
-//         // Pass the location data as an extra to the service.
-//         intent.putExtra(AppUtils.LocationConstants.LOCATION_DATA_EXTRA, mLocation);
-//
-//         // Start the service. If the service isn't already running, it is instantiated and started
-//         // (creating a process for it if needed); if it is running then it remains running. The
-//         // service kills itself automatically once all intents are processed.
-//         startService(intent);
-//     }
 
     @Override
     public void onConnected(Bundle arg0) {
