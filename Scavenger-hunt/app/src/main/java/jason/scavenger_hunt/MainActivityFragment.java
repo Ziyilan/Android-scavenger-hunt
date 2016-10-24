@@ -25,11 +25,19 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         Button mainManageButton = (Button) view.findViewById(R.id.mainManageButton);
+        Button mainCompeteButton = (Button) view.findViewById(R.id.mainCompeteButton);
 
         mainManageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity) getActivity()).changeFragment(new CourseMenuFragment());
+            }
+        });
+
+        mainCompeteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).changeFragment(new CourseSelectFragment());
             }
         });
         return view;
