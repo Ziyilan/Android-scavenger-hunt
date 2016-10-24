@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements jason.scavenger_h
         transaction.commit();
 
 
-        chronometer = (Chronometer) findViewById(R.id.chronometer);
-        button = (Button) findViewById(R.id.gpsDataButton);
-        text = (TextView) findViewById(R.id.textView);
+//        chronometer = (Chronometer) findViewById(R.id.chronometer);
+//        button = (Button) findViewById(R.id.gpsDataButton);
+//        text = (TextView) findViewById(R.id.textView);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -74,68 +74,68 @@ public class MainActivity extends AppCompatActivity implements jason.scavenger_h
             }
         };
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.INTERNET,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                }, 10);
-                return;
-            }
-        }
-        else {
-            configueButton();
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{
+//                        Manifest.permission.ACCESS_COARSE_LOCATION,
+//                        Manifest.permission.INTERNET,
+//                        Manifest.permission.ACCESS_FINE_LOCATION
+//                }, 10);
+//                return;
+//            }
+//        }
+//        else {
+//            configueButton();
+//        }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 10:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    configueButton();
-                return;
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode){
+//            case 10:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+//                    configueButton();
+//                return;
+//        }
+//    }
 
-    private void configueButton(){
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
-
-            }
-        });
-    }
-
-    // the method for when we press the 'reset' button
-    public void resetButtonClick(View v) {
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        timeWhenStopped = 0;
-        TextView secondsText = (TextView) findViewById(R.id.hmsTekst);
-        secondsText.setText("0 seconds");
-    }
-
-    // the method for when we press the 'start' button
-    public void startButtonClick(View v) {
-        chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-        chronometer.start();
-        stopClicked = false;
-
-    }
-
-    // the method for when we press the 'stop' button
-    public void stopButtonClick(View v){
-        if (!stopClicked)  {
-            TextView secondsText = (TextView) findViewById(R.id.hmsTekst);
-            timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
-            int seconds = (int) timeWhenStopped / 1000;
-            secondsText.setText( Math.abs(seconds) + " seconds");
-            chronometer.stop();
-            stopClicked = true;
-        }
-    }
+//    private void configueButton(){
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+//
+//            }
+//        });
+//    }
+//
+//    // the method for when we press the 'reset' button
+//    public void resetButtonClick(View v) {
+//        chronometer.setBase(SystemClock.elapsedRealtime());
+//        timeWhenStopped = 0;
+//        TextView secondsText = (TextView) findViewById(R.id.hmsTekst);
+//        secondsText.setText("0 seconds");
+//    }
+//
+//    // the method for when we press the 'start' button
+//    public void startButtonClick(View v) {
+//        chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+//        chronometer.start();
+//        stopClicked = false;
+//
+//    }
+//
+//    // the method for when we press the 'stop' button
+//    public void stopButtonClick(View v){
+//        if (!stopClicked)  {
+//            TextView secondsText = (TextView) findViewById(R.id.hmsTekst);
+//            timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
+//            int seconds = (int) timeWhenStopped / 1000;
+//            secondsText.setText( Math.abs(seconds) + " seconds");
+//            chronometer.stop();
+//            stopClicked = true;
+//        }
+//    }
 
 
     public void changeFragment(Fragment fragment) {
