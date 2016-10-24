@@ -16,6 +16,9 @@ import android.view.ViewGroup;
  * to handle interaction events.
  * Use the {@link CreateCourseFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ * useful resource for map things:
+ * http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
  */
 public class CreateCourseFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -64,7 +67,9 @@ public class CreateCourseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_course, container, false);
+        View view = inflater.inflate(R.layout.fragment_manage_create_course, container, false);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -1,0 +1,21 @@
+<LinearLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_marginTop="100dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/manager_manage_courses_button"
+            android:id="@+id/manageCoursesButton"
+            android:layout_gravity="center" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/manager_create_course_button"
+            android:id="@+id/createCourseButton"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
