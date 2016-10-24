@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = new MainActivityFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //        transaction.add(R.id.fragment_container, fragment, "MainActivityFragment");
-        transaction.add(R.id.fragment_container, new CourseSelectFragment());
+        transaction.add(R.id.fragment_container, new MainMenuFragment());
         transaction.commit();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
