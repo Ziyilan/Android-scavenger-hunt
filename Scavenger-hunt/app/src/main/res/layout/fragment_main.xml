@@ -16,6 +16,12 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/compete_compete_button"
+        android:id="@+id/mainCompeteButton" />
+
     <!--tools:context="jason.scavenger_hunt.MainActivityFragment"-->
     <!--tools:showIn="@layout/activity_main">-->
 
