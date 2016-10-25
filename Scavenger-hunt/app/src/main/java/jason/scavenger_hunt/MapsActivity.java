@@ -1,13 +1,17 @@
 package jason.scavenger_hunt;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +38,9 @@ public class MapsActivity extends FragmentActivity
     private GoogleApiClient mGoogleApiClient;
     private String TAG = "MapsActivity";
      private Button addPointButton;
+     private Button savePointsButton;
      private CameraPosition mCameraPosition;
+     CompeteCourseDbHelper dbHelper;
 
 
     @Override
@@ -45,6 +51,7 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        dbHelper = new CompeteCourseDbHelper(getApplicationContext());
 
         // lots of helpful code from Shvet and Sishin on StackOverflow
         // http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
@@ -61,6 +68,15 @@ public class MapsActivity extends FragmentActivity
             public void onClick(View v) {
                 Toast toast = Toast.makeText(getApplicationContext(), Double.toString(mCameraPosition.target.latitude) + ", " + Double.toString(mCameraPosition.target.longitude), Toast.LENGTH_SHORT );
                 toast.show();
+
+            }
+        });
+
+        savePointsButton = (Button) findViewById(R.id.manageSavePointsButton);
+        savePointsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                showInputDialog();
 
             }
         });
@@ -147,6 +163,29 @@ public class MapsActivity extends FragmentActivity
     private void changeMap(Location location) {
 
     }
+
+     protected void showInputDialog(){
+         LayoutInflater layoutInflater = LayoutInflater.from(MapsActivity.this);
+         View promptView = layoutInflater.inflate(R.layout.alert_layout, null);
+         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+         builder.setView(promptView);
+
+         final EditText editText = (EditText) promptView.findViewById(R.id.alertEditText);
+         builder.setCancelable(false)
+                 .setPositiveButton("Just Say Yes...", new DialogInterface.OnClickListener(){
+                     public void onClick(DialogInterface dialog, int id){
+                         Toast toast = Toast.makeText(getApplicationContext(), editText.getText(), Toast.LENGTH_SHORT);
+                         toast.show();
+                     }
+                 })
+                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                     public void onClick(DialogInterface dialog, int id){
+                         dialog.cancel();
+                     }
+                 });
+         AlertDialog alert = builder.create();
+         alert.show();
+     }
 
 
 }

@@ -8,6 +8,7 @@
     <string name="manager_delete_courses_button">Delete</string>
     <string name="title_activity_maps">Map</string>
     <string name="manager_add_point">Add Point</string>
+    <string name="manager_save_points">Save Points</string>
     <string name="compete_compete_button">Compete</string>
 
 </resources>
