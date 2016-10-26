@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,11 +16,13 @@ public class CompeteCourseAdapter extends ArrayAdapter<Course> {
 
     private ArrayList<Course> courseList;
     private Context context;
+    private CourseDbHelper dbHelper;
 
-    public CompeteCourseAdapter(Context context, ArrayList<Course> courseItem){
+    public CompeteCourseAdapter(Context context, ArrayList<Course> courseItem, CourseDbHelper courseDbHelper){
         super(context, 0, courseItem);
         this.courseList = courseItem;
         this.context = context;
+        this.dbHelper = courseDbHelper;
     }
 
     @Override
@@ -33,9 +34,11 @@ public class CompeteCourseAdapter extends ArrayAdapter<Course> {
         }
 
         final TextView courseName = (TextView) convertView.findViewById(R.id.comCourseName);
-        final TextView distance = (TextView) convertView.findViewById(R.id.comDistance);
+        courseName.setText(courseItem.getName());
+        final TextView numOfPoints = (TextView) convertView.findViewById(R.id.comNOP);
+        numOfPoints.setText(String.valueOf(courseItem.getNumOfPoints()));
         final TextView bestTime = (TextView) convertView.findViewById(R.id.comBestTime);
-
+        bestTime.setText(String.valueOf(courseItem.getYourTime()));
 
         return convertView;
     }

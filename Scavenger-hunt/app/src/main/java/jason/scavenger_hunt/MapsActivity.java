@@ -1,11 +1,15 @@
 package jason.scavenger_hunt;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,20 +31,30 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
         LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
- {
+        GoogleApiClient.OnConnectionFailedListener {
 
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private String TAG = "MapsActivity";
-     private Button addPointButton;
-     private Button savePointsButton;
-     private CameraPosition mCameraPosition;
-     CompeteCourseDbHelper dbHelper;
+    private Button addPointButton;
+    private Button savePointsButton;
+    private CameraPosition mCameraPosition;
+    CourseDbHelper dbHelper;
+    Course course;
+    CompeteCourseAdapter courseAdapter;
+    ArrayList<Latitude> arrayLatitude;
+    ArrayList<Longitude> arrayLongitude;
+
+
+    public void setCourseItem(Course course){
+         this.course = course;
+     }
 
 
     @Override
@@ -51,7 +65,14 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        dbHelper = new CompeteCourseDbHelper(getApplicationContext());
+
+        arrayLatitude = new ArrayList<>();
+        arrayLongitude = new ArrayList<>();
+        dbHelper = new CourseDbHelper(getApplicationContext());
+        course = new Course("name", 0,0,arrayLatitude,arrayLongitude);
+        ArrayList<Course> arrayOfCourses = new ArrayList<>();
+        courseAdapter = new CompeteCourseAdapter(getApplicationContext(),arrayOfCourses,dbHelper);
+
 
         // lots of helpful code from Shvet and Sishin on StackOverflow
         // http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
@@ -66,6 +87,11 @@ public class MapsActivity extends FragmentActivity
         addPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Latitude newLatitude = new Latitude(mCameraPosition.target.latitude);
+                Longitude newLongitude = new Longitude(mCameraPosition.target.longitude);
+                course.addLatitude(newLatitude);
+                course.addLongitude(newLongitude);
+                courseAdapter.notifyDataSetChanged();
                 Toast toast = Toast.makeText(getApplicationContext(), Double.toString(mCameraPosition.target.latitude) + ", " + Double.toString(mCameraPosition.target.longitude), Toast.LENGTH_SHORT );
                 toast.show();
 
@@ -164,18 +190,30 @@ public class MapsActivity extends FragmentActivity
 
     }
 
-     protected void showInputDialog(){
-         LayoutInflater layoutInflater = LayoutInflater.from(MapsActivity.this);
+    protected void showInputDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(MapsActivity.this);
          View promptView = layoutInflater.inflate(R.layout.alert_layout, null);
          AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
          builder.setView(promptView);
+
 
          final EditText editText = (EditText) promptView.findViewById(R.id.alertEditText);
          builder.setCancelable(false)
                  .setPositiveButton("Just Say Yes...", new DialogInterface.OnClickListener(){
                      public void onClick(DialogInterface dialog, int id){
+                         course.setName(editText.getText().toString());
+
+                         int k = course.getLatitude().size();
+                         course.setNumOfPoints(k);
+
+                         CourseDbHelper dbHelper1 = new CourseDbHelper(getApplicationContext());
+                         dbHelper1.addToCourseList(course);
+                         courseAdapter.notifyDataSetChanged();
+
+
                          Toast toast = Toast.makeText(getApplicationContext(), editText.getText(), Toast.LENGTH_SHORT);
                          toast.show();
+                         changeActivity();
                      }
                  })
                  .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
@@ -185,7 +223,13 @@ public class MapsActivity extends FragmentActivity
                  });
          AlertDialog alert = builder.create();
          alert.show();
-     }
 
 
+    }
+
+    public void changeActivity() {
+
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(i);
+    }
 }

@@ -34,7 +34,7 @@ public class Course {
         return numOfPoints;
     }
 
-    public void setNumOfPoints(int distance) {
+    public void setNumOfPoints(int numOfPoints) {
         this.numOfPoints = numOfPoints;
     }
 
@@ -52,6 +52,15 @@ public class Course {
 
     public void setLatitude(ArrayList<Latitude> latitude) {
         this.latitude = latitude;
+    }
+
+    public void addLatitude(Latitude latitudes){
+        this.latitude.add(latitudes);
+
+    }
+
+    public void addLongitude(Longitude longitudes){
+        this.longitude.add(longitudes);
     }
 
     public ArrayList<Longitude> getLongitude() {
