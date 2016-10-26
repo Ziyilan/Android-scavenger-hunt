@@ -26,6 +26,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 /**
  * The activity for the competing map.
  */
@@ -41,6 +43,7 @@ public class CompeteMapsActivity
         private GoogleApiClient mGoogleApiClient;
         private String TAG = "CompeteMapsActivity";
         private Button doneButton;
+        private Button backButton;
         private CameraPosition mCameraPosition;
 
 
@@ -79,20 +82,36 @@ public class CompeteMapsActivity
                 }
             });
 
+            backButton = (Button) findViewById(R.id.mRunCancel);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("key", "2");
+                    startActivity(i);
+                }
+            });
+
         }
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
-            // Add a marker at Olin and move the camera
-            LatLng olin1 = new LatLng(42.2932, -71.2637);
-            LatLng olin2 = new LatLng(42.2933, -71.2637);
+            final ArrayList<Double> lats = new ArrayList<>();
+            final ArrayList<Double> lngs = new ArrayList<>();
+            lats.add(42.2932);
+            lats.add(42.2937);
+            lngs.add(-71.2637);
+            lngs.add(-71.2637);
 
-            mMap.addMarker(new MarkerOptions().position(olin1).title("Marker at Olin"));
-            mMap.addMarker(new MarkerOptions().position(olin2).title("Marker at Olin"));
+            for (int i = 0; i < lats.size(); i++) {
+                LatLng marker = new LatLng(lats.get(i), lngs.get(i));
+                mMap.addMarker(new MarkerOptions().position(marker).title("Marker at Olin"));
+            }
+
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(olin1).zoom(19f).tilt(0).build();
+                    .target(new LatLng(42.2932, -71.2637)).zoom(19f).tilt(0).build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -100,6 +119,17 @@ public class CompeteMapsActivity
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
                     mCameraPosition = cameraPosition;
+
+                    for (int i = 0; i < lats.size(); i++) {
+                        double dist = DistanceCalculator.distance(mCameraPosition.target.latitude, mCameraPosition.target.longitude, lats.get(i), lngs.get(i));
+//
+
+                        if (dist < .01) {
+                            //do something
+                            Toast toast2 = Toast.makeText(getApplicationContext(), "You made it to point #" + Integer.toString(i), Toast.LENGTH_SHORT);
+                            toast2.show();
+                        }
+                    }
 
                 }
             });

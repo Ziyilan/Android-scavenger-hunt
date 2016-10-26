@@ -43,17 +43,19 @@ public class MainActivity extends AppCompatActivity implements jason.scavenger_h
         if (var != null) {
             if (var.equals("1")) {
                 transaction.add(R.id.fragment_container, new RunFinishFragment(), "RunFinishFragment");
-
+            }
+            else if (var.equals("2")) {
+                transaction.add(R.id.fragment_container, new CourseSelectFragment(), "CourseSelectFragment");
             }
         }
-
-        transaction.add(R.id.fragment_container, fragment, "MainActivityFragment");
+        else {
+            transaction.add(R.id.fragment_container, fragment, "MainActivityFragment");
+        }
         //transaction.add(R.id.fragment_container, new CourseSelectFragment());
         transaction.commit();
 
+
     }
-
-
 
     public void changeFragment(Fragment fragment) {
         FragmentManager manager = getSupportFragmentManager();
