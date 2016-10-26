@@ -8,14 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/manager_manage_courses_button"
-        android:id="@+id/mainManageButton"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <!--tools:context="jason.scavenger_hunt.MainActivityFragment"-->
     <!--tools:showIn="@layout/activity_main">-->
 
@@ -25,6 +17,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_container" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manager_manage_courses_button"
+        android:id="@+id/mainManageButton"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/compete"
+        android:id="@+id/mainCompeteButton"
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>
