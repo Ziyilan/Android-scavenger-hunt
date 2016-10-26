@@ -1,13 +1,16 @@
 package jason.scavenger_hunt;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +53,12 @@ public class CompeteMapsActivity
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
 
+            Chronometer chronometer = (Chronometer) findViewById(R.id.mChronometer);
+            long timeWhenStopped = 0;
+
+            chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            chronometer.start();
+
             // lots of helpful code from Shvet and Sishin on StackOverflow
             // http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
 
@@ -63,8 +72,9 @@ public class CompeteMapsActivity
             doneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast toast = Toast.makeText(getApplicationContext(), Double.toString(mCameraPosition.target.latitude) + ", " + Double.toString(mCameraPosition.target.longitude), Toast.LENGTH_SHORT );
-                    toast.show();
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("key", "1");
+                    startActivity(i);
 
                 }
             });
