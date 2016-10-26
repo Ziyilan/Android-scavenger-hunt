@@ -40,6 +40,8 @@ public class MainActivityFragment extends Fragment {
                 ((MainActivity)getActivity()).changeFragment(new CourseSelectFragment());
             }
         });
+
+
         return view;
     }
 }

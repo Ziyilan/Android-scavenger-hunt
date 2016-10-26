@@ -3,11 +3,13 @@ package jason.scavenger_hunt;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 
 
 public class RunFragment extends Fragment {
@@ -22,6 +24,11 @@ public class RunFragment extends Fragment {
 
         Button doneButton = (Button) view.findViewById(R.id.runDone);
         Button cancelButton = (Button) view.findViewById(R.id.runCancel);
+        Chronometer chronometer = (Chronometer) view.findViewById(R.id.chronometer);
+        long timeWhenStopped = 0;
+
+        chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+        chronometer.start();
 
         doneButton.setOnClickListener(new View.OnClickListener(){
             @Override
