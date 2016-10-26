@@ -33,9 +33,10 @@ public class MainActivityFragment extends Fragment {
                 ((MainActivity) getActivity()).changeFragment(new CourseMenuFragment());
             }
         });
+
         mainCompeteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 ((MainActivity) getActivity()).changeFragment(new CourseSelectFragment());
             }
         });

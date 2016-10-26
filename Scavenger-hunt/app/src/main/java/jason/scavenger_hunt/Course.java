@@ -1,17 +1,25 @@
 package jason.scavenger_hunt;
 
+import java.util.ArrayList;
+
 /**
  * Created by mafaldaborges on 10/17/16.
  */
 public class Course {
     private String name;
-    private int distance;
+    private int numOfPoints;
     private int yourTime;
+    private ArrayList<Latitude> latitude;
+    private ArrayList<Longitude> longitude;
+    private long id;
 
-    public Course(String name, int distance, int yourTime){
+    public Course(String name, int yourTime, int numOfPoints, ArrayList<Latitude> latitude, ArrayList<Longitude> longitude){
         this.name = name;
-        this.distance = distance;
+        this.numOfPoints = numOfPoints;
         this.yourTime = yourTime;
+        this.latitude = latitude;
+        this.longitude = longitude;
+
     }
 
     public String getName() {
@@ -22,12 +30,12 @@ public class Course {
         this.name = name;
     }
 
-    public int getDistance() {
-        return distance;
+    public int getNumOfPoints() {
+        return numOfPoints;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setNumOfPoints(int numOfPoints) {
+        this.numOfPoints = numOfPoints;
     }
 
     public int getYourTime() {
@@ -36,5 +44,38 @@ public class Course {
 
     public void setYourTime(int yourTime) {
         this.yourTime = yourTime;
+    }
+
+    public ArrayList<Latitude> getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(ArrayList<Latitude> latitude) {
+        this.latitude = latitude;
+    }
+
+    public void addLatitude(Latitude latitudes){
+        this.latitude.add(latitudes);
+
+    }
+
+    public void addLongitude(Longitude longitudes){
+        this.longitude.add(longitudes);
+    }
+
+    public ArrayList<Longitude> getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(ArrayList<Longitude> longitude) {
+        this.longitude = longitude;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
