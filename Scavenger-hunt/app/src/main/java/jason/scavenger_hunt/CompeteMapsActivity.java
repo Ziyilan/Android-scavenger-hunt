@@ -50,6 +50,9 @@ public class CompeteMapsActivity
         CourseDbHelper dbHelper;
         ArrayList<Latitude> lats;
         ArrayList<Longitude> lngs;
+        Chronometer chronometer;
+        Course course;
+        Long id;
 
 
 
@@ -63,16 +66,16 @@ public class CompeteMapsActivity
             mapFragment.getMapAsync(this);
 
             Intent i = getIntent();
-            Long id = i.getLongExtra("key", 1);
+            id = i.getLongExtra("key", 1);
 
             dbHelper = new CourseDbHelper(getApplicationContext());
-            final Course course = dbHelper.getCourse(id);
+            course = dbHelper.getCourse(id);
 
             lats = course.getLatitude();
             lngs = course.getLongitude();
 
-            Chronometer chronometer = (Chronometer) findViewById(R.id.mChronometer);
-            long timeWhenStopped = 0;
+            chronometer = (Chronometer) findViewById(R.id.mChronometer);
+            final long timeWhenStopped = 0;
 
             chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             chronometer.start();
@@ -144,8 +147,6 @@ public class CompeteMapsActivity
 
                         if (dist < .01) {
                             //do something
-                            Toast toast2 = Toast.makeText(getApplicationContext(), "You made it to point #" + Integer.toString(i), Toast.LENGTH_SHORT);
-                            toast2.show();
 
                             LatLng pnt = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                             mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
@@ -156,6 +157,13 @@ public class CompeteMapsActivity
                             }
 
                             if (visited.size() == lats.size()) {
+                                Long elapsedTime = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
+                                Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
+                                toast.show();
+
+                                course.setYourTime(elapsedTime.intValue());
+                                dbHelper.updateArray(id, course);
+
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.putExtra("key", "1");
                                 startActivity(intent);

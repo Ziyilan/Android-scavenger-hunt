@@ -63,7 +63,7 @@ public class CourseSelectFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which){
 
                         Intent i = new Intent(getContext(), CompeteMapsActivity.class);
-                        i.putExtra("key", id);
+                        i.putExtra("key", id+1); //ids are offset by one for some reason...
                         startActivity(i);
                     }
                 });

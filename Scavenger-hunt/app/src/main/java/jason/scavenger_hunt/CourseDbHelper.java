@@ -88,20 +88,25 @@ public class CourseDbHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
 
-        long readID = c.getLong(0);
-        String readName = c.getString(1);
-        String readTime = c.getString(2);
-        String readNOP = c.getString(3);
-        String readLat = c.getString(4);
-        String readLon = c.getString(5);
+        if (c.getCount() > 0) {
 
-        Course courseInput = new Course(readName, Integer.parseInt(readTime), Integer.parseInt(readNOP), stringToLatArray(readLat), stringToLonArray(readLon));
-        courseInput.setId(readID);
+            long readID = c.getLong(0);
+            String readName = c.getString(1);
+            String readTime = c.getString(2);
+            String readNOP = c.getString(3);
+            String readLat = c.getString(4);
+            String readLon = c.getString(5);
 
-        c.close();
-        db.close();
+            Course courseInput = new Course(readName, Integer.parseInt(readTime), Integer.parseInt(readNOP), stringToLatArray(readLat), stringToLonArray(readLon));
+            courseInput.setId(readID);
 
-        return courseInput;
+            c.close();
+            db.close();
+
+            return courseInput;
+        } else {
+            return new Course("Default", 0, 0, new ArrayList<Latitude>(), new ArrayList<Longitude>());
+        }
     }
 
     public void updateArray(long id, Course course){
