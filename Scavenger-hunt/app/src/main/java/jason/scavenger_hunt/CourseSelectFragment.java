@@ -1,11 +1,10 @@
 package jason.scavenger_hunt;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,15 @@ import java.util.ArrayList;
 
 public class CourseSelectFragment extends Fragment {
 
+    CourseDbHelper dbHelper;
+
     public CourseSelectFragment(){
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
     }
 
@@ -26,9 +33,10 @@ public class CourseSelectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         View view = inflater.inflate(R.layout.fragment_compete_course_select, container, false);
+        dbHelper = new CourseDbHelper((getContext()));
 
-        final ArrayList<Course> listOfCourses = new ArrayList<Course>();
-        final CompeteCourseAdapter adapter = new CompeteCourseAdapter(getContext(), listOfCourses);
+        final ArrayList<Course> listOfCourses = dbHelper.getAll();
+        final CompeteCourseAdapter adapter = new CompeteCourseAdapter(getContext(), listOfCourses, dbHelper);
         final ListView listView = (ListView) view.findViewById(R.id.courseListView);
         listView.setAdapter(adapter);
 
@@ -45,6 +53,7 @@ public class CourseSelectFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("CourseSelectFragment", "I've been hit!");
                 AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                 alertDialog.setTitle("Ready to Run?");
 
@@ -52,7 +61,7 @@ public class CourseSelectFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which){
                         ((MainActivity) getActivity()).changeFragment(new RunFragment());
-                        //Todo: this will need to be changed to a non-new fragment
+                        //Todo: this will need to be changed to moving to a new Activity
                     }
                 });
 
@@ -62,6 +71,8 @@ public class CourseSelectFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
+
+                alertDialog.show();
 
 
             }

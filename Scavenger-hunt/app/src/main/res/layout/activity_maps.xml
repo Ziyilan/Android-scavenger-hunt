@@ -22,4 +22,11 @@
         android:id="@+id/manageAddPointButton"
         android:layout_gravity="left|bottom" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manager_save_points"
+        android:id="@+id/manageSavePointsButton"
+        android:layout_gravity="right|bottom" />
+
 </fragment>

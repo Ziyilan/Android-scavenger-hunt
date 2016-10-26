@@ -37,11 +37,10 @@ public class MainActivityFragment extends Fragment {
         mainCompeteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ((MainActivity)getActivity()).changeFragment(new CourseSelectFragment());
             }
         });
-
-
         return view;
     }
 }
