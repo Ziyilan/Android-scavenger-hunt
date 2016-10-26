@@ -22,8 +22,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -102,12 +104,16 @@ public class CompeteMapsActivity
             final ArrayList<Double> lngs = new ArrayList<>();
             lats.add(42.2932);
             lats.add(42.2937);
+            lats.add(42.2937);
             lngs.add(-71.2637);
             lngs.add(-71.2637);
+            lngs.add(-71.2634);
+
+            final ArrayList<String> visited = new ArrayList<>();
 
             for (int i = 0; i < lats.size(); i++) {
-                LatLng marker = new LatLng(lats.get(i), lngs.get(i));
-                mMap.addMarker(new MarkerOptions().position(marker).title("Marker at Olin"));
+                LatLng coords = new LatLng(lats.get(i), lngs.get(i));
+                mMap.addMarker(new MarkerOptions().position(coords).title("Marker at Olin"));
             }
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -128,6 +134,20 @@ public class CompeteMapsActivity
                             //do something
                             Toast toast2 = Toast.makeText(getApplicationContext(), "You made it to point #" + Integer.toString(i), Toast.LENGTH_SHORT);
                             toast2.show();
+
+                            LatLng pnt = new LatLng(lats.get(i), lngs.get(i));
+                            mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+                            if (!visited.contains(Integer.toString(i))){
+                                visited.add(Integer.toString(i));
+                            }
+
+                            if (visited.size() == lats.size()) {
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.putExtra("key", "1");
+                                startActivity(intent);
+                            }
                         }
                     }
 
