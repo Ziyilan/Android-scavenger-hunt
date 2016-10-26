@@ -22,8 +22,6 @@
         android:text="@string/compete_compete_button"
         android:id="@+id/mainCompeteButton" />
 
-    <!--tools:context="jason.scavenger_hunt.MainActivityFragment"-->
-    <!--tools:showIn="@layout/activity_main">-->
 
     <FrameLayout
         android:layout_below="@+id/toolbar"
@@ -31,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_container" />
+
 
 
 </LinearLayout>

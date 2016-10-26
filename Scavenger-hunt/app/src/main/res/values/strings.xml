@@ -10,5 +10,6 @@
     <string name="manager_add_point">Add Point</string>
     <string name="manager_save_points">Save Points</string>
     <string name="compete_compete_button">Compete</string>
+    <string name="compete">Compete</string>
 
 </resources>

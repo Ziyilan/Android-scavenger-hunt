@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
     private Context context;
     private CourseDbHelper dbHelper;
 
-    public ManageCourseAdapter(Context context, ArrayList<Course> courseItem, CourseDbHelper courseDbHelper){
+    public ManageCourseAdapter(Context context, ArrayList<Course> courseItem, CourseDbHelper courseDbHelper) {
         super(context, 0, courseItem);
         this.courseList = courseItem;
         this.context = context;
@@ -29,9 +29,9 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final Course courseItem = getItem(position);
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.manage_course_content, parent, false);
 
         }
@@ -43,11 +43,11 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
         final TextView bestTime = (TextView) convertView.findViewById(R.id.manBestTime);
         bestTime.setText(String.valueOf(courseItem.getYourTime()));
 
-        Button deleteButton = (Button) convertView.findViewById(R.id.manDelete);
+        ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.manDelete);
 
-        deleteButton.setOnClickListener(new View.OnClickListener(){
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 courseList.remove(position);
                 dbHelper.deleteRow(courseItem);
                 notifyDataSetChanged();
@@ -56,4 +56,5 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
 
         return convertView;
     }
+
 }

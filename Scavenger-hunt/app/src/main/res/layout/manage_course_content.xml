@@ -32,12 +32,15 @@
         android:layout_alignBottom="@+id/manCourseName"
         android:layout_centerHorizontal="true" />
 
-    <Button
+
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
         android:id="@+id/manDelete"
-        android:layout_alignBottom="@+id/manNOP"
+        android:src="@drawable/ic_delete"
+        android:layout_weight="1"
+        android:layout_gravity="right"
+        android:layout_alignTop="@+id/manBestTime"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
