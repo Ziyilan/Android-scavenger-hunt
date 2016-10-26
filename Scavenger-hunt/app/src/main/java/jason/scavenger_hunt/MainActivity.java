@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements jason.scavenger_h
 //        }
 //    }
 
-
     public void changeFragment(Fragment fragment) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
