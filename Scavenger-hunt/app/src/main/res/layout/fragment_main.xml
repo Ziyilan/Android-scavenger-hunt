@@ -8,6 +8,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
+
+    <!--tools:context="jason.scavenger_hunt.MainActivityFragment"-->
+    <!--tools:showIn="@layout/activity_main">-->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +24,6 @@
         android:layout_height="wrap_content"
         android:text="@string/compete_compete_button"
         android:id="@+id/mainCompeteButton" />
-
 
     <FrameLayout
         android:layout_below="@+id/toolbar"

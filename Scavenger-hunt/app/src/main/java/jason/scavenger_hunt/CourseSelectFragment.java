@@ -45,7 +45,7 @@ public class CourseSelectFragment extends Fragment {
         tempButt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                ((MainActivity) getActivity()).changeFragment(new RunFragment());
+                ((MainActivity) getActivity()).changeToCompeteActivity();
                 //Todo: you will delete this later
             }
         });

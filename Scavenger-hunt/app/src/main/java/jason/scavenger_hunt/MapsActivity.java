@@ -1,9 +1,16 @@
 package jason.scavenger_hunt;
 
+
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -42,6 +49,12 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private String TAG = "MapsActivity";
+//     private Button addPointButton;
+//     private CameraPosition mCameraPosition;
+     private LocationManager locationManager;
+     private android.location.LocationListener locationListener;
+     private double currentLatitude;
+     private double currentLongitude;
     private Button addPointButton;
     private Button savePointsButton;
     private CameraPosition mCameraPosition;
@@ -55,6 +68,7 @@ public class MapsActivity extends FragmentActivity
     public void setCourseItem(Course course){
          this.course = course;
      }
+
 
 
     @Override
@@ -98,6 +112,44 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new android.location.LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                }, 10);
+                return;
+            }
+        }
+        else {
+            locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+        }
         savePointsButton = (Button) findViewById(R.id.manageSavePointsButton);
         savePointsButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -106,8 +158,17 @@ public class MapsActivity extends FragmentActivity
 
             }
         });
-
     }
+
+     @Override
+     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+         switch (requestCode){
+             case 10:
+                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                     locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+                 return;
+         }
+     }
 
 
      @Override
@@ -115,8 +176,10 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
 
         // Add a marker at Olin and move the camera
-        LatLng olin = new LatLng(42.2932, -71.2637);
-        mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
+//        LatLng olin = new LatLng(42.2932, -71.2637);
+
+         LatLng olin = new LatLng(currentLongitude,currentLatitude);
+         mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(olin).zoom(19f).tilt(0).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
