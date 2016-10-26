@@ -80,6 +80,30 @@ public class CourseDbHelper extends SQLiteOpenHelper {
         return courseArray;
     }
 
+    public Course getCourse(long id) {
+        String query = "select * from " + CompeteCourseTable.FeedEntryCourse.COURSE_TABLE_NAME + " where " + CompeteCourseTable.FeedEntryCourse._ID
+                + " = " + id;
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        long readID = c.getLong(0);
+        String readName = c.getString(1);
+        String readTime = c.getString(2);
+        String readNOP = c.getString(3);
+        String readLat = c.getString(4);
+        String readLon = c.getString(5);
+
+        Course courseInput = new Course(readName, Integer.parseInt(readTime), Integer.parseInt(readNOP), stringToLatArray(readLat), stringToLonArray(readLon));
+        courseInput.setId(readID);
+
+        c.close();
+        db.close();
+
+        return courseInput;
+    }
+
     public void updateArray(long id, Course course){
         ArrayList<Course> courseArray = new ArrayList<>();
         SQLiteDatabase dbr = this.getReadableDatabase();

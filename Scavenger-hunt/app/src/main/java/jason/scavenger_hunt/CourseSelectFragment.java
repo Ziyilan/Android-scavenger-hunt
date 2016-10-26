@@ -1,6 +1,7 @@
 package jason.scavenger_hunt;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -52,7 +53,7 @@ public class CourseSelectFragment extends Fragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, final long id) {
                 Log.d("CourseSelectFragment", "I've been hit!");
                 AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                 alertDialog.setTitle("Ready to Run?");
@@ -60,8 +61,10 @@ public class CourseSelectFragment extends Fragment {
                 alertDialog.setButton(-1, "Let's Start", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which){
-                        ((MainActivity) getActivity()).changeFragment(new RunFragment());
-                        //Todo: this will need to be changed to moving to a new Activity
+
+                        Intent i = new Intent(getContext(), CompeteMapsActivity.class);
+                        i.putExtra("key", id);
+                        startActivity(i);
                     }
                 });
 
