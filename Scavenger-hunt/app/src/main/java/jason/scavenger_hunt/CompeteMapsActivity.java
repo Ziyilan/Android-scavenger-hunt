@@ -1,5 +1,6 @@
 package jason.scavenger_hunt;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -7,10 +8,14 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -140,6 +145,8 @@ public class CompeteMapsActivity
                                 Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
                                 toast.show();
 
+//                                showInputDialog(elapsedTime.intValue());
+
                                 course.setYourTime(elapsedTime.intValue());
                                 dbHelper.updateArray(id, course);
 
@@ -208,6 +215,33 @@ public class CompeteMapsActivity
         }
 
         private void changeMap(Location location) {
+
+        }
+
+        protected void showInputDialog(final int yourTime) {
+            LayoutInflater layoutInflater = LayoutInflater.from(CompeteMapsActivity.this);
+            View promptView = layoutInflater.inflate(R.layout.compete_alert_layout, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CompeteMapsActivity.this);
+            builder.setView(promptView);
+
+
+            final TextView showTime = (TextView) promptView.findViewById(R.id.finishTime);
+            showTime.setText(String.valueOf(yourTime));
+            builder.setCancelable(false)
+                    .setPositiveButton("Save Your Time", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int id){
+                            course.setYourTime(yourTime);
+                            dbHelper.updateArray(id, course);
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("key", "2");
+                            startActivity(intent);
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
 
         }
 

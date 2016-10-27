@@ -262,7 +262,7 @@ public class MapsActivity extends FragmentActivity
 
          final EditText editText = (EditText) promptView.findViewById(R.id.alertEditText);
          builder.setCancelable(false)
-                 .setPositiveButton("Just Say Yes...", new DialogInterface.OnClickListener(){
+                 .setPositiveButton("Set Your Course", new DialogInterface.OnClickListener(){
                      public void onClick(DialogInterface dialog, int id){
                          course.setName(editText.getText().toString());
 
