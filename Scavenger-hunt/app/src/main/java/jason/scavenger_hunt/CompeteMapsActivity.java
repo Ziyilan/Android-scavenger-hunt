@@ -145,14 +145,18 @@ public class CompeteMapsActivity
                                 Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
                                 toast.show();
 
-//                                showInputDialog(elapsedTime.intValue());
 
-                                course.setYourTime(elapsedTime.intValue());
-                                dbHelper.updateArray(id, course);
+                                if (course.getYourTime()== 0 || course.getYourTime() > elapsedTime.intValue()){
 
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("key", "2");
-                                startActivity(intent);
+                                    course.setYourTime(elapsedTime.intValue());
+                                    dbHelper.updateArray(id, course);
+                                    showInputDialogWinner(elapsedTime.intValue());
+                                } else {
+                                    showInputDialogLoser(elapsedTime.intValue());
+
+                                }
+
+
                             }
                         }
                     }
@@ -218,7 +222,7 @@ public class CompeteMapsActivity
 
         }
 
-        protected void showInputDialog(final int yourTime) {
+        protected void showInputDialogWinner(final int yourTime) {
             LayoutInflater layoutInflater = LayoutInflater.from(CompeteMapsActivity.this);
             View promptView = layoutInflater.inflate(R.layout.compete_alert_layout, null);
             AlertDialog.Builder builder = new AlertDialog.Builder(CompeteMapsActivity.this);
@@ -227,11 +231,40 @@ public class CompeteMapsActivity
 
             final TextView showTime = (TextView) promptView.findViewById(R.id.finishTime);
             showTime.setText(String.valueOf(yourTime));
+            final TextView finishStatement = (TextView) promptView.findViewById(R.id.finishTestView);
+            finishStatement.setText("New Best Time");
+
             builder.setCancelable(false)
                     .setPositiveButton("Save Your Time", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int id){
-                            course.setYourTime(yourTime);
-                            dbHelper.updateArray(id, course);
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("key", "2");
+                            startActivity(intent);
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
+        }
+
+        protected void showInputDialogLoser(final int yourTime) {
+            LayoutInflater layoutInflater = LayoutInflater.from(CompeteMapsActivity.this);
+            View promptView = layoutInflater.inflate(R.layout.compete_alert_layout, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CompeteMapsActivity.this);
+            builder.setView(promptView);
+
+
+            final TextView showTime = (TextView) promptView.findViewById(R.id.finishTime);
+            showTime.setText(String.valueOf(yourTime));
+            final TextView finishStatement = (TextView) promptView.findViewById(R.id.finishTestView);
+            finishStatement.setText("You were too slow");
+
+            builder.setCancelable(false)
+                    .setPositiveButton("Have Another Go", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int id){
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("key", "2");
