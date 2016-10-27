@@ -42,7 +42,7 @@ public class CourseSelectFragment extends Fragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, final long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
                 Log.d("CourseSelectFragment", "I've been hit!");
                 AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                 alertDialog.setTitle("Ready to Run?");
@@ -52,7 +52,8 @@ public class CourseSelectFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which){
 
                         Intent i = new Intent(getContext(), CompeteMapsActivity.class);
-                        i.putExtra("key", id+1); //ids are offset by one for some reason...
+                        long id2 = listOfCourses.get(position).getId();
+                        i.putExtra("key", id2);
                         startActivity(i);
                     }
                 });
