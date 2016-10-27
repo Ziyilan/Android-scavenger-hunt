@@ -16,7 +16,6 @@ public class CompeteCourseTable {
         public static final String COURSE_LATITUDE = "latitude";
         public static final String COURSE_LONGITUDE = "longitude";
 
-
         public static final String TEXT_TYPE = " TEXT";
         public static final String INT_TYPE = " INTEGER";
         public static final String COMMA_SEP = ",";

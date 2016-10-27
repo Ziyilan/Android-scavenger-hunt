@@ -31,15 +31,12 @@ public class CourseSelectFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-
         View view = inflater.inflate(R.layout.fragment_compete_course_select, container, false);
         dbHelper = new CourseDbHelper((getContext()));
-
         final ArrayList<Course> listOfCourses = dbHelper.getAll();
         final CompeteCourseAdapter adapter = new CompeteCourseAdapter(getContext(), listOfCourses, dbHelper);
         final ListView listView = (ListView) view.findViewById(R.id.courseListView);
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
@@ -57,25 +54,16 @@ public class CourseSelectFragment extends Fragment {
                         startActivity(i);
                     }
                 });
-
                 alertDialog.setButton(-2, "Please No", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which){
                         dialog.cancel();
                     }
                 });
-
                 alertDialog.show();
-
-
             }
         });
-
-
-
-
         return view;
-
     }
 
 }

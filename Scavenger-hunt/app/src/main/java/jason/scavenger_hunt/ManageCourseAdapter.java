@@ -18,13 +18,11 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
 
 
     private ArrayList<Course> courseList;
-    private Context context;
     private CourseDbHelper dbHelper;
 
     public ManageCourseAdapter(Context context, ArrayList<Course> courseItem, CourseDbHelper courseDbHelper) {
         super(context, 0, courseItem);
         this.courseList = courseItem;
-        this.context = context;
         this.dbHelper = courseDbHelper;
     }
 
@@ -35,16 +33,13 @@ public class ManageCourseAdapter extends ArrayAdapter<Course> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.manage_course_content, parent, false);
 
         }
-
         final TextView courseName = (TextView) convertView.findViewById(R.id.manCourseName);
         courseName.setText(courseItem.getName());
         final TextView numOfPoints = (TextView) convertView.findViewById(R.id.manNOP);
         numOfPoints.setText(String.valueOf(courseItem.getNumOfPoints()));
         final TextView bestTime = (TextView) convertView.findViewById(R.id.manBestTime);
         bestTime.setText(String.valueOf(courseItem.getYourTime()));
-
         ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.manDelete);
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

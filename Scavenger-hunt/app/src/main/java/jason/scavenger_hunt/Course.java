@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by mafaldaborges on 10/17/16.
  */
+//class for course object
 public class Course {
     private String name;
     private int numOfPoints;
@@ -50,10 +51,6 @@ public class Course {
         return latitude;
     }
 
-    public void setLatitude(ArrayList<Latitude> latitude) {
-        this.latitude = latitude;
-    }
-
     public void addLatitude(Latitude latitudes){
         this.latitude.add(latitudes);
 
@@ -65,10 +62,6 @@ public class Course {
 
     public ArrayList<Longitude> getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(ArrayList<Longitude> longitude) {
-        this.longitude = longitude;
     }
 
     public long getId() {

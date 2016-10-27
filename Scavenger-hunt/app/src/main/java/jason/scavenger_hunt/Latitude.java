@@ -13,8 +13,4 @@ public class Latitude {
     public double getLatitude() {
         return latitude;
     }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
 }

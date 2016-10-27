@@ -52,7 +52,6 @@ public class CompeteMapsActivity
         private GoogleApiClient mGoogleApiClient;
         private String TAG = "CompeteMapsActivity";
         private Button backButton;
-        private CameraPosition mCameraPosition;
         private ArrayList<String> visited;
         CourseDbHelper dbHelper;
         ArrayList<Latitude> lats;
@@ -73,31 +72,26 @@ public class CompeteMapsActivity
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
-
             Intent i = getIntent();
             id = i.getLongExtra("key", 1);
-
+            //load course checkpoints
             dbHelper = new CourseDbHelper(getApplicationContext());
             course = dbHelper.getCourse(id);
-
             lats = course.getLatitude();
             lngs = course.getLongitude();
-
+            //start the timer for competition
             chronometer = (Chronometer) findViewById(R.id.mChronometer);
             final long timeWhenStopped = 0;
-
             chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             chronometer.start();
 
             // lots of helpful code from Shvet and Sishin on StackOverflow
             // http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
-
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).build();
-
             mGoogleApiClient.connect();
-
+            //back button to end race
             backButton = (Button) findViewById(R.id.mRunCancel);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,23 +101,19 @@ public class CompeteMapsActivity
                     startActivity(i);
                 }
             });
-
         }
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
-
+            //create a list for storing visited checkpoints
             visited = new ArrayList<>();
-
             for (int i = 0; i < lats.size(); i++) {
                 LatLng coords = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                 mMap.addMarker(new MarkerOptions().position(coords).title("Marker at Olin"));
             }
-
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lats.get(0).getLatitude(), lngs.get(0).getLongitude())).zoom(19f).tilt(0).build();
-
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
@@ -151,31 +141,24 @@ public class CompeteMapsActivity
             if (mGoogleApiClient != null) {
                 LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             }
-
+            // iterate through all the checkpoints in the course and if the distance to a point is less
+            // than 10m, add it to visited list. when visited list is full, prompt to course complete page
             for (int i = 0; i < lats.size(); i++) {
-                double dist = DistanceCalculator.distance(location.getLatitude(), location.getLongitude(), lats.get(i).getLatitude(), lngs.get(i).getLongitude());
-//
-
+                double dist = DistanceCalculator.distance(location.getLatitude(), location.getLongitude(),
+                        lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                 if (dist < .01) {
-                    //do something
-
-
                     LatLng pnt = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                     final Marker marker = mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-
                     if (!visited.contains(Integer.toString(i))){
                         visited.add(Integer.toString(i));
                     }
-
                     if (visited.size() == lats.size()) {
                         Long elapsedTime = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
                         Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
                         toast.show();
-
                         course.setYourTime(elapsedTime.intValue());
                         dbHelper.updateArray(id, course);
-
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("key", "2");
                         startActivity(intent);

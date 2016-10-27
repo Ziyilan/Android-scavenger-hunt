@@ -51,12 +51,10 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private String TAG = "MapsActivity";
-//     private Button addPointButton;
-//     private CameraPosition mCameraPosition;
-     private LocationManager locationManager;
-     private android.location.LocationListener locationListener;
-     private double currentLatitude;
-     private double currentLongitude;
+    private LocationManager locationManager;
+    private android.location.LocationListener locationListener;
+    private double currentLatitude;
+    private double currentLongitude;
     private Button addPointButton;
     private Button savePointsButton;
     private CameraPosition mCameraPosition;
@@ -83,24 +81,19 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         arrayLatitude = new ArrayList<>();
         arrayLongitude = new ArrayList<>();
         dbHelper = new CourseDbHelper(getApplicationContext());
         course = new Course("name", 0,0,arrayLatitude,arrayLongitude);
         ArrayList<Course> arrayOfCourses = new ArrayList<>();
         courseAdapter = new CompeteCourseAdapter(getApplicationContext(),arrayOfCourses,dbHelper);
-
-
         // lots of helpful code from Shvet and Sishin on StackOverflow
         // http://stackoverflow.com/questions/27504606/how-to-implement-draggable-map-like-uber-android-update-with-change-location
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API).addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).build();
 
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(LocationServices.API).addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this).build();
-
-            mGoogleApiClient.connect();
-
+        mGoogleApiClient.connect();
         addPointButton = (Button) findViewById(R.id.manageAddPointButton);
         addPointButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,37 +105,30 @@ public class MapsActivity extends FragmentActivity
                 courseAdapter.notifyDataSetChanged();
                 Toast toast = Toast.makeText(getApplicationContext(), Double.toString(mCameraPosition.target.latitude) + ", " + Double.toString(mCameraPosition.target.longitude), Toast.LENGTH_SHORT );
                 toast.show();
-
             }
         });
-
+        // setup location manager for gps service
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
         locationListener = new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                // update location when changed
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
             }
-
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-
             }
-
             @Override
             public void onProviderEnabled(String s) {
-
             }
-
             @Override
             public void onProviderDisabled(String s) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
         };
-
+        // check version of android api and user permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{
@@ -165,7 +151,7 @@ public class MapsActivity extends FragmentActivity
             }
         });
     }
-
+    // if user permits, start streaming gps data
      @Override
      public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
          switch (requestCode){
@@ -176,39 +162,21 @@ public class MapsActivity extends FragmentActivity
          }
      }
 
-
      @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+         mMap = googleMap;
          if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                  == PackageManager.PERMISSION_GRANTED) {
              mMap.setMyLocationEnabled(true);
          } else {
              // Show rationale and request permission.
-             Log.d(TAG, "fuck you");
          }
-//         currentLatitude = mMap.getMyLocation().getLatitude();
-//         currentLongitude = mMap.getMyLocation().getLongitude();
-
-        // Add a marker at Olin and move the camera
-//        LatLng olin = new LatLng(42.2932, -71.2637);
 
          LatLng olin = new LatLng(currentLongitude, currentLatitude);
          mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
+         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(olin).zoom(19f).tilt(0).build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-             @Override
-             public void onCameraChange(CameraPosition cameraPosition) {
-                 mCameraPosition = cameraPosition;
-
-                 Log.i("centerLat",Double.toString(cameraPosition.target.latitude));
-
-                 Log.i("centerLong",Double.toString(cameraPosition.target.longitude));
-             }
-         });
+         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
@@ -218,9 +186,7 @@ public class MapsActivity extends FragmentActivity
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
     }
-
 
     @Override
     public void onConnected(Bundle arg0) {
@@ -234,7 +200,6 @@ public class MapsActivity extends FragmentActivity
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -245,12 +210,10 @@ public class MapsActivity extends FragmentActivity
             currentLatitude = mLastLocation.getLatitude();
             currentLongitude = mLastLocation.getLongitude();
             Log.d(TAG, "ON connected");
-
         } else
             try {
                 LocationServices.FusedLocationApi.removeLocationUpdates(
                         mGoogleApiClient, this);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -261,18 +224,15 @@ public class MapsActivity extends FragmentActivity
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         //stupMap();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult arg0) {
         // do some stuff
-
     }
 
     @Override

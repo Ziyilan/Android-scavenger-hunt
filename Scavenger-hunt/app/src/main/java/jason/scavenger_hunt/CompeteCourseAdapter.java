@@ -14,15 +14,8 @@ import java.util.ArrayList;
  */
 public class CompeteCourseAdapter extends ArrayAdapter<Course> {
 
-    private ArrayList<Course> courseList;
-    private Context context;
-    private CourseDbHelper dbHelper;
-
     public CompeteCourseAdapter(Context context, ArrayList<Course> courseItem, CourseDbHelper courseDbHelper){
         super(context, 0, courseItem);
-        this.courseList = courseItem;
-        this.context = context;
-        this.dbHelper = courseDbHelper;
     }
 
     @Override
@@ -30,16 +23,14 @@ public class CompeteCourseAdapter extends ArrayAdapter<Course> {
         final Course courseItem = getItem(position);
         if (convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.compete_course_content, parent, false);
-
         }
-
+        //populate listview with course data loaded from database
         final TextView courseName = (TextView) convertView.findViewById(R.id.comCourseName);
-        courseName.setText(courseItem.getName());
+        courseName.setText("Name: " + courseItem.getName());
         final TextView numOfPoints = (TextView) convertView.findViewById(R.id.comNOP);
-        numOfPoints.setText(String.valueOf(courseItem.getNumOfPoints()));
+        numOfPoints.setText("Checkpoints: " + String.valueOf(courseItem.getNumOfPoints()));
         final TextView bestTime = (TextView) convertView.findViewById(R.id.comBestTime);
-        bestTime.setText(String.valueOf(courseItem.getYourTime()));
-
+        bestTime.setText("Best time: " + String.valueOf(courseItem.getYourTime()));
         return convertView;
     }
 
