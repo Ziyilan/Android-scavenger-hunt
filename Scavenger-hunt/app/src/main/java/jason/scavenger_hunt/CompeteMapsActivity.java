@@ -47,6 +47,13 @@ public class CompeteMapsActivity
         private Button doneButton;
         private Button backButton;
         private CameraPosition mCameraPosition;
+        CourseDbHelper dbHelper;
+        ArrayList<Latitude> lats;
+        ArrayList<Longitude> lngs;
+        Chronometer chronometer;
+        Course course;
+        Long id;
+
 
 
         @Override
@@ -58,8 +65,17 @@ public class CompeteMapsActivity
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
 
-            Chronometer chronometer = (Chronometer) findViewById(R.id.mChronometer);
-            long timeWhenStopped = 0;
+            Intent i = getIntent();
+            id = i.getLongExtra("key", 1);
+
+            dbHelper = new CourseDbHelper(getApplicationContext());
+            course = dbHelper.getCourse(id);
+
+            lats = course.getLatitude();
+            lngs = course.getLongitude();
+
+            chronometer = (Chronometer) findViewById(R.id.mChronometer);
+            final long timeWhenStopped = 0;
 
             chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             chronometer.start();
@@ -80,7 +96,6 @@ public class CompeteMapsActivity
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     i.putExtra("key", "1");
                     startActivity(i);
-
                 }
             });
 
@@ -100,24 +115,24 @@ public class CompeteMapsActivity
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
-            final ArrayList<Double> lats = new ArrayList<>();
-            final ArrayList<Double> lngs = new ArrayList<>();
-            lats.add(42.2932);
-            lats.add(42.2937);
-            lats.add(42.2937);
-            lngs.add(-71.2637);
-            lngs.add(-71.2637);
-            lngs.add(-71.2634);
+//            lats = new ArrayList<>();
+//            lngs = new ArrayList<>();
+//            lats.add(42.2932);
+//            lats.add(42.2937);
+//            lats.add(42.2937);
+//            lngs.add(-71.2637);
+//            lngs.add(-71.2637);
+//            lngs.add(-71.2634);
 
             final ArrayList<String> visited = new ArrayList<>();
 
             for (int i = 0; i < lats.size(); i++) {
-                LatLng coords = new LatLng(lats.get(i), lngs.get(i));
+                LatLng coords = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                 mMap.addMarker(new MarkerOptions().position(coords).title("Marker at Olin"));
             }
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(42.2932, -71.2637)).zoom(19f).tilt(0).build();
+                    .target(new LatLng(lats.get(0).getLatitude(), lngs.get(0).getLongitude())).zoom(19f).tilt(0).build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -127,15 +142,13 @@ public class CompeteMapsActivity
                     mCameraPosition = cameraPosition;
 
                     for (int i = 0; i < lats.size(); i++) {
-                        double dist = DistanceCalculator.distance(mCameraPosition.target.latitude, mCameraPosition.target.longitude, lats.get(i), lngs.get(i));
+                        double dist = DistanceCalculator.distance(mCameraPosition.target.latitude, mCameraPosition.target.longitude, lats.get(i).getLatitude(), lngs.get(i).getLongitude());
 //
 
                         if (dist < .01) {
                             //do something
-                            Toast toast2 = Toast.makeText(getApplicationContext(), "You made it to point #" + Integer.toString(i), Toast.LENGTH_SHORT);
-                            toast2.show();
 
-                            LatLng pnt = new LatLng(lats.get(i), lngs.get(i));
+                            LatLng pnt = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
                             mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
@@ -144,6 +157,13 @@ public class CompeteMapsActivity
                             }
 
                             if (visited.size() == lats.size()) {
+                                Long elapsedTime = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
+                                Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
+                                toast.show();
+
+                                course.setYourTime(elapsedTime.intValue());
+                                dbHelper.updateArray(id, course);
+
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.putExtra("key", "1");
                                 startActivity(intent);
