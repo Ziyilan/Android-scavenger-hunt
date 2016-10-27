@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -41,19 +40,9 @@ public class CourseSelectFragment extends Fragment {
         final ListView listView = (ListView) view.findViewById(R.id.courseListView);
         listView.setAdapter(adapter);
 
-        Button tempButt = (Button) view.findViewById(R.id.tempButton);
-
-        tempButt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                ((MainActivity) getActivity()).changeToCompeteActivity();
-                //Todo: you will delete this later
-            }
-        });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, final long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
                 Log.d("CourseSelectFragment", "I've been hit!");
                 AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                 alertDialog.setTitle("Ready to Run?");
@@ -63,7 +52,8 @@ public class CourseSelectFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which){
 
                         Intent i = new Intent(getContext(), CompeteMapsActivity.class);
-                        i.putExtra("key", id+1); //ids are offset by one for some reason...
+                        long id2 = listOfCourses.get(position).getId();
+                        i.putExtra("key", id2);
                         startActivity(i);
                     }
                 });

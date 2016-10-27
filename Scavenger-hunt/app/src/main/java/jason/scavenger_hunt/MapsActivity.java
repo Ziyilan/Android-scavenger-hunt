@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -113,6 +114,8 @@ public class MapsActivity extends FragmentActivity
         });
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
         locationListener = new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -174,11 +177,20 @@ public class MapsActivity extends FragmentActivity
      @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                 == PackageManager.PERMISSION_GRANTED) {
+             mMap.setMyLocationEnabled(true);
+         } else {
+             // Show rationale and request permission.
+             Log.d(TAG, "fuck you");
+         }
+//         currentLatitude = mMap.getMyLocation().getLatitude();
+//         currentLongitude = mMap.getMyLocation().getLongitude();
 
         // Add a marker at Olin and move the camera
 //        LatLng olin = new LatLng(42.2932, -71.2637);
 
-         LatLng olin = new LatLng(currentLongitude,currentLatitude);
+         LatLng olin = new LatLng(currentLongitude, currentLatitude);
          mMap.addMarker(new MarkerOptions().position(olin).title("Marker at Olin"));
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(olin).zoom(19f).tilt(0).build();
@@ -212,6 +224,8 @@ public class MapsActivity extends FragmentActivity
                 mGoogleApiClient);
         if (mLastLocation != null) {
             changeMap(mLastLocation);
+            currentLatitude = mLastLocation.getLatitude();
+            currentLongitude = mLastLocation.getLongitude();
             Log.d(TAG, "ON connected");
 
         } else
@@ -262,7 +276,7 @@ public class MapsActivity extends FragmentActivity
 
          final EditText editText = (EditText) promptView.findViewById(R.id.alertEditText);
          builder.setCancelable(false)
-                 .setPositiveButton("Just Say Yes...", new DialogInterface.OnClickListener(){
+                 .setPositiveButton("Set Your Course", new DialogInterface.OnClickListener(){
                      public void onClick(DialogInterface dialog, int id){
                          course.setName(editText.getText().toString());
 
