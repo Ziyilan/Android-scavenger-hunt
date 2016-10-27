@@ -177,6 +177,16 @@ public class MapsActivity extends FragmentActivity
          CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(olin).zoom(19f).tilt(0).build();
          mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+             @Override
+             public void onCameraChange(CameraPosition cameraPosition) {
+                 mCameraPosition = cameraPosition;
+                 Log.i("centerLat",Double.toString(cameraPosition.target.latitude));
+                 Log.i("centerLong",Double.toString(cameraPosition.target.longitude));
+             }
+         });
     }
 
     @Override
