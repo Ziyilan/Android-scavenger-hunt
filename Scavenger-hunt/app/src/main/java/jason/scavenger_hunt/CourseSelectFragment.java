@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -40,16 +39,6 @@ public class CourseSelectFragment extends Fragment {
         final CompeteCourseAdapter adapter = new CompeteCourseAdapter(getContext(), listOfCourses, dbHelper);
         final ListView listView = (ListView) view.findViewById(R.id.courseListView);
         listView.setAdapter(adapter);
-
-        Button tempButt = (Button) view.findViewById(R.id.tempButton);
-
-        tempButt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                ((MainActivity) getActivity()).changeToCompeteActivity();
-                //Todo: you will delete this later
-            }
-        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

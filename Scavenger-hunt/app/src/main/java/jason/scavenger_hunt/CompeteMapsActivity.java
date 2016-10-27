@@ -25,7 +25,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class CompeteMapsActivity
         private GoogleMap mMap;
         private GoogleApiClient mGoogleApiClient;
         private String TAG = "CompeteMapsActivity";
-        private Button doneButton;
         private Button backButton;
         private CameraPosition mCameraPosition;
         CourseDbHelper dbHelper;
@@ -89,16 +87,6 @@ public class CompeteMapsActivity
 
             mGoogleApiClient.connect();
 
-            doneButton = (Button) findViewById(R.id.mRunDone);
-            doneButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    i.putExtra("key", "1");
-                    startActivity(i);
-                }
-            });
-
             backButton = (Button) findViewById(R.id.mRunCancel);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,15 +102,6 @@ public class CompeteMapsActivity
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
-
-//            lats = new ArrayList<>();
-//            lngs = new ArrayList<>();
-//            lats.add(42.2932);
-//            lats.add(42.2937);
-//            lats.add(42.2937);
-//            lngs.add(-71.2637);
-//            lngs.add(-71.2637);
-//            lngs.add(-71.2634);
 
             final ArrayList<String> visited = new ArrayList<>();
 
@@ -165,7 +144,7 @@ public class CompeteMapsActivity
                                 dbHelper.updateArray(id, course);
 
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("key", "1");
+                                intent.putExtra("key", "2");
                                 startActivity(intent);
                             }
                         }
