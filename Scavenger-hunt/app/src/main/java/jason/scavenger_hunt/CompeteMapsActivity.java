@@ -1,5 +1,6 @@
 package jason.scavenger_hunt;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -45,12 +48,15 @@ public class CompeteMapsActivity
         private String TAG = "CompeteMapsActivity";
         private Button backButton;
         private CameraPosition mCameraPosition;
+        private ArrayList<String> visited;
         CourseDbHelper dbHelper;
         ArrayList<Latitude> lats;
         ArrayList<Longitude> lngs;
         Chronometer chronometer;
         Course course;
         Long id;
+        Location mLastLocation;
+        Marker mCurrLocationMarker;
 
 
 
@@ -103,7 +109,7 @@ public class CompeteMapsActivity
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
-            final ArrayList<String> visited = new ArrayList<>();
+            visited = new ArrayList<>();
 
             for (int i = 0; i < lats.size(); i++) {
                 LatLng coords = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
@@ -115,53 +121,75 @@ public class CompeteMapsActivity
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                @Override
-                public void onCameraChange(CameraPosition cameraPosition) {
-                    mCameraPosition = cameraPosition;
-
-                    for (int i = 0; i < lats.size(); i++) {
-                        double dist = DistanceCalculator.distance(mCameraPosition.target.latitude, mCameraPosition.target.longitude, lats.get(i).getLatitude(), lngs.get(i).getLongitude());
-//
-
-                        if (dist < .01) {
-                            //do something
-
-                            LatLng pnt = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-
-                            if (!visited.contains(Integer.toString(i))){
-                                visited.add(Integer.toString(i));
-                            }
-
-                            if (visited.size() == lats.size()) {
-                                Long elapsedTime = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                                Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
-                                toast.show();
-
-                                course.setYourTime(elapsedTime.intValue());
-                                dbHelper.updateArray(id, course);
-
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("key", "2");
-                                startActivity(intent);
-                            }
-                        }
-                    }
-
-                }
-            });
         }
 
         @Override
         public void onLocationChanged(Location location) {
+            mLastLocation = location;
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
 
+            //Place current location marker
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title("Current Position");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+            //move map camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+            //stop location updates
+            if (mGoogleApiClient != null) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            }
+
+            for (int i = 0; i < lats.size(); i++) {
+                double dist = DistanceCalculator.distance(location.getLatitude(), location.getLongitude(), lats.get(i).getLatitude(), lngs.get(i).getLongitude());
+//
+
+                if (dist < .01) {
+                    //do something
+
+                    LatLng pnt = new LatLng(lats.get(i).getLatitude(), lngs.get(i).getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(pnt).title("Marker 2 at Olin")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+                    if (!visited.contains(Integer.toString(i))){
+                        visited.add(Integer.toString(i));
+                    }
+
+                    if (visited.size() == lats.size()) {
+                        Long elapsedTime = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
+                        Toast toast = Toast.makeText(getApplicationContext(), Long.toString(elapsedTime), Toast.LENGTH_SHORT);
+                        toast.show();
+
+                        course.setYourTime(elapsedTime.intValue());
+                        dbHelper.updateArray(id, course);
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("key", "2");
+                        startActivity(intent);
+                    }
+                }
+            }
         }
 
         @Override
         public void onConnected(Bundle arg0) {
             // required method
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(1000);
+            mLocationRequest.setFastestInterval(1000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            }
 
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
